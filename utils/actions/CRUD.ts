@@ -42,3 +42,24 @@ export async function addRig(uid: string, rigData: Omit<Rig, 'id' | 'createdAt'>
         createdAt: new Date().toISOString()
     })
 }
+
+export async function updateRig(uid: string, rigId: string, updatedFields: Partial<Rig>) {
+    try {
+        const rigRef = doc(db, 'users', uid, 'rigs', rigId)
+        await updateDoc(rigRef, updatedFields)
+        console.log('Rig updated', updatedFields)
+    } catch (error) {
+        console.error(error)
+        throw error 
+    }
+}
+
+export async function deleteRig(uid: string, rigId: string) {
+    try {
+        const rigRef = doc(db, 'users', uid, 'rigs', rigId)
+        await deleteDoc(rigRef)
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}

@@ -1,3 +1,5 @@
+'use client' 
+
 import React from 'react'
 import { Paper, Stack, Text, Center, Loader, Card, Group, Button, Grid } from '@mantine/core'
 import { Trash2, Pencil, MoreVertical } from 'lucide-react'

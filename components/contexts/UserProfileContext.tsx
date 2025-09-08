@@ -2,7 +2,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc, collection, onSnapshot } from 'firebase/firestore'
 import { updateProfile } from 'firebase/auth'
 import { db } from '@/firebase/config'
 import { AuthContext } from './AuthProvider'
@@ -13,12 +13,12 @@ interface UserProfile {
   dropzone: string
   license: string
   ratings: string[]
-  rigs: Rig[]
   currentRig: string
 }
 
 interface UserProfileContextType {
   profile: UserProfile | null
+  rigs: Rig[]
   loading: boolean
   setProfileField: <K extends keyof UserProfile>(
     field: K,
@@ -32,6 +32,7 @@ const UserProfileContext = createContext<UserProfileContextType | undefined>(und
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   const { user, loading: authLoading } = useContext(AuthContext)
   const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [rigs, setRigs] = useState<Rig[]>([])
   const [loading, setLoading] = useState(true)
 
   // Load profile from Firestore
@@ -49,7 +50,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
           dropzone: data.dropzone || '',
           license: data.license || '',
           ratings: data.ratings || [],
-          rigs: data.rigs || [],
           currentRig: data.currentRig || ''
         })
       } else {
@@ -59,7 +59,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
           dropzone: '',
           license: '',
           ratings: [],
-          rigs: [],
           currentRig: '',
           createdAt: new Date()
         })
@@ -68,7 +67,6 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
           dropzone: '',
           license: '',
           ratings: [],
-          rigs: [],
           currentRig: ''
         })
       }
@@ -76,6 +74,21 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     }
     fetchProfile()
   }, [user, authLoading])
+
+  useEffect(() => {
+    if (!user) return
+  
+    const rigsRef = collection(db, 'users', user.uid, 'rigs')
+    const unsubscribe = onSnapshot(rigsRef, (snapshot) => {
+      const data: Rig[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      } as Rig))
+      setRigs(data)
+    })
+  
+    return () => unsubscribe()
+  }, [user])
 
   // Update local profile state
   const setProfileField = <K extends keyof UserProfile>(
@@ -99,7 +112,8 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
         displayName: profile.displayName,
         dropzone: profile.dropzone,
         license: profile.license,
-        ratings: profile.ratings
+        ratings: profile.ratings,
+        currentRig: profile.currentRig
       }
       await updateDoc(ref, profileData)
   
@@ -110,7 +124,7 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <UserProfileContext.Provider value={{ profile, loading, setProfileField, saveProfile }}>
+    <UserProfileContext.Provider value={{ profile, rigs, loading, setProfileField, saveProfile }}>
       {children}
     </UserProfileContext.Provider>
   )
