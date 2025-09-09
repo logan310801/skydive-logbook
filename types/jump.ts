@@ -8,6 +8,10 @@ export interface Jump {
     altitude?: number
     freefallTime?: number
     canopy?: string
+    container: string
+    aad: string
+    reserve: string
+    lineset: string
     jumpType?: string
     notes?: string
     createdAt?: string    // optional, added by Firestore

@@ -33,7 +33,7 @@ export default function LoginPage() {
     }
 
     return (
-        <Center style={{ height: '100vh' }}>
+        <Center style={{ height: '80vh' }}>
             <Paper withBorder shadow='xl' radius='lg' p='xl'>
             <form onSubmit={handleLogin}>
                 <Stack gap='xl'>

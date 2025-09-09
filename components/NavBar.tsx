@@ -49,7 +49,7 @@ const NavBar = ({ toggle }: NavBarProps) => {
             Equipment
           </Button>
 
-          <Button onClick={() => { handleLogout }} variant='outline'>
+          <Button onClick={handleLogout} variant='outline'>
             Log out
           </Button>
 

@@ -27,19 +27,21 @@ export default function SignUpPage() {
     }
 
     return (
-        <Center style={{ height: '100vh' }}>
+        <Center style={{ height: '80vh' }}>
             <Paper withBorder shadow='xl' radius='lg' p='xl'>
             <form onSubmit={handleSignup}>
                 <Stack gap='xl'>
                     
                     <Text ta='center' size='xl'>Create an account</Text>
                     <TextInput 
+                        placeholder='example@example.com'
                         value={email}
                         onChange={(e) => setEmail(e.currentTarget.value)}
                         type='email'
                         radius='xl'
                     />
                     <PasswordInput 
+                        placeholder='**********'
                         value={password}
                         onChange={(e) => setPassword(e.currentTarget.value)}
                         radius='xl'
