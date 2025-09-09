@@ -5,6 +5,7 @@ import { AppShell, Stack, Button } from '@mantine/core'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/firebase/config'
 import { useRouter } from 'next/navigation'
+import { useUserProfile } from './contexts/UserProfileContext'
 
 type NavBarProps = {
   toggle: () => void
@@ -12,6 +13,7 @@ type NavBarProps = {
 
 const NavBar = ({ toggle }: NavBarProps) => {
   const router = useRouter()
+  const { profile } = useUserProfile()
 
   const handleLogout = async () => {
       try {
@@ -27,7 +29,8 @@ const NavBar = ({ toggle }: NavBarProps) => {
     <AppShell.Navbar p='md' >
         <Stack>
 
-          <Button onClick={() => { 
+          <Button 
+          onClick={() => { 
             router.push('/profile')
             toggle()
           } 
@@ -35,30 +38,52 @@ const NavBar = ({ toggle }: NavBarProps) => {
             Profile
           </Button>
 
-          <Button onClick={() => { 
+          <Button 
+          disabled={profile?.role === 'admin' || profile?.role === 'dropzone'}
+          onClick={() => { 
             router.push('/') 
             toggle()
           } } variant='outline'
             >Home
           </Button>
 
-          <Button onClick={() => { 
+          <Button 
+          disabled={profile?.role === 'admin' || profile?.role === 'dropzone'}
+          onClick={() => { 
             router.push('/equipment')
             toggle()
             } } variant='outline'>
             Equipment
           </Button>
 
-          <Button onClick={handleLogout} variant='outline'>
+          <Button 
+          onClick={handleLogout} variant='outline'>
             Log out
           </Button>
 
-          <Button onClick={() => { 
+          <Button 
+          disabled={profile?.role === 'admin' || profile?.role === 'dropzone'}
+          onClick={() => { 
             router.push('/') 
             toggle()
           }} variant='outline'>
             Help / FAQ
           </Button>
+
+          {
+            profile?.role === 'admin' &&
+            <>
+              <Button onClick={() => { router.push('/admin/dropzones'); toggle(); }} color='teal'>
+                Dropzones (Admin)
+              </Button>
+              <Button onClick={() => { router.push('/admin/students'); toggle(); }} color='teal'>
+                Students (Admin)
+              </Button>
+              <Button onClick={() => { router.push('/admin/instructors'); toggle(); }} color='teal'>
+                Instructors (Admin)
+              </Button>
+            </>
+          }
 
         </Stack>
     </AppShell.Navbar>

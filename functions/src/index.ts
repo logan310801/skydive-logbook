@@ -8,8 +8,31 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
-import * as logger from "firebase-functions/logger";
+import { onCall } from "firebase-functions/v2/https";
+import * as admin from "firebase-admin";
+
+admin.initializeApp();
+
+export const setUserRole = onCall(async (request) => {
+    const { uid, role } = request.data as { uid: string; role: string };
+  
+    // request.auth is automatically typed
+    if (!request.auth) {
+      throw new Error("Unauthenticated");
+    }
+  
+    if (request.auth.token.role !== "admin") {
+      throw new Error("Permission denied: only admins can set roles");
+    }
+  
+    if (!uid || !role) {
+      throw new Error("Must provide uid and role");
+    }
+  
+    await admin.auth().setCustomUserClaims(uid, { role });
+  
+    return { message: `Role '${role}' set for user ${uid}` };
+  });
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript

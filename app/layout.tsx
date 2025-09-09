@@ -10,6 +10,7 @@ import NavBar from "@/components/NavBar";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { UserProfileProvider } from "@/components/contexts/UserProfileContext";
+import RoleRedirect from "@/components/redirects/RoleRedirect";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
@@ -37,7 +38,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <NavBar toggle={toggle}/>
 
                 {/* Page content */}
-                <AppShell.Main>{children}</AppShell.Main>
+                <AppShell.Main>
+                  <RoleRedirect>
+                    {children}
+                  </RoleRedirect>
+                </AppShell.Main>
               </AppShell>
             </UserProfileProvider>
           </AuthProvider>

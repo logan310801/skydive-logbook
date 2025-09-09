@@ -1,12 +1,8 @@
 'use client'
 
-import { AuthContext } from '@/components/contexts/AuthProvider'
-import { Center, Paper, Stack, Text, Button, TextInput, Loader, MultiSelect } from '@mantine/core'
-import { useContext, useState, useEffect } from 'react'
-import { updateProfile } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
-import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '@/firebase/config'
+import { Paper, Stack, Text, Button, TextInput, Loader, MultiSelect } from '@mantine/core'
+import { useState } from 'react'
+
 import { useUserProfile } from '@/components/contexts/UserProfileContext'
 
 export default function ProfilePage() {
@@ -51,6 +47,8 @@ export default function ProfilePage() {
                 onChange={(val) => setProfileField('ratings', val)}
                 disabled={!isEditing}
               />
+
+              <Text>Account type: {profile.role}</Text>
 
     
               <Button

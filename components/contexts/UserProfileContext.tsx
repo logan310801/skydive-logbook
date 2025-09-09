@@ -13,7 +13,7 @@ export interface UserProfile {
   license: string
   ratings: string[]
   currentRig: string
-  role: 'student' | 'instructor' | 'admin'
+  role: 'student' | 'instructor' | 'admin' | 'dropzone'
 }
 
 interface UserProfileContextType {
@@ -34,39 +34,46 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
 
   // Load profile from Firestore
   useEffect(() => {
-    if (authLoading || !user) return
-
-    const fetchProfile = async () => {
-      const ref = doc(db, 'users', user.uid)
-      const snap = await getDoc(ref)
-
-      if (snap.exists()) {
-        const data = snap.data()
-        setProfile({
-          displayName: data.displayName || user.displayName || '',
-          dropzone: data.dropzone || '',
-          license: data.license || '',
-          ratings: data.ratings || [],
-          currentRig: data.currentRig || '',
-          role: data.role
-        })
-      } else {
-        // Create default profile
-        const defaultProfile: UserProfile = {
-          displayName: user.displayName || '',
-          dropzone: '',
-          license: '',
-          ratings: [],
-          currentRig: '',
-          role: 'student'
-        }
-        await setDoc(ref, { ...defaultProfile, createdAt: new Date() })
-        setProfile(defaultProfile)
-      }
-      setLoading(false)
+    if (authLoading) return;
+  
+    if (!user) {
+      // no signed-in user → clear profile + stop loading
+      setProfile(null);
+      setLoading(false);
+      return;
     }
-    fetchProfile()
-  }, [user, authLoading])
+  
+    const fetchProfile = async () => {
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+  
+      if (snap.exists()) {
+        const data = snap.data();
+        setProfile({
+          displayName: data.displayName || user.displayName || "",
+          dropzone: data.dropzone || "",
+          license: data.license || "",
+          ratings: data.ratings || [],
+          currentRig: data.currentRig || "",
+          role: (data.role as UserProfile["role"]) || "student", // default fallback
+        });
+      } else {
+        const defaultProfile: UserProfile = {
+          displayName: user.displayName || "",
+          dropzone: "",
+          license: "",
+          ratings: [],
+          currentRig: "",
+          role: "student",
+        };
+        await setDoc(ref, { ...defaultProfile, createdAt: new Date() });
+        setProfile(defaultProfile);
+      }
+      setLoading(false);
+    };
+  
+    fetchProfile();
+  }, [user, authLoading]);
 
   // Load rigs subcollection
   useEffect(() => {
