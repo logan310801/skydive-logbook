@@ -43,3 +43,4 @@ next-env.d.ts
 #ADDED
 
 /functions/setAdmin.js
+/functions/serviceAccountKey.json
