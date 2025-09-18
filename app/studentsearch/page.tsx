@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import StudentLogbookSearch from "@/components/StudentLogbookSearch";
 import StudentLogbookList from "@/components/StudentLogbookList";
-import { UserProfile } from "@/components/contexts/UserProfileContext";
+import { UserProfile, useUserProfile } from "@/components/contexts/UserProfileContext";
 import ProtectedRoute from "@/components/redirects/ProtectedRoute";
 import { Title } from '@mantine/core'
 import { Jump } from "@/types/jump";
 import SignOffJumpModal from "@/components/SignOffJumpModal";
 import JumpDetailsModal from "@/components/modals/JumpDetailsModal";
+import { AuthContext } from "@/components/contexts/AuthProvider";
+import { notifications } from "@mantine/notifications";
 
 export default function StudentsPage() {
   const [selectedStudent, setSelectedStudent] = useState<UserProfile | null>(null);
@@ -19,10 +21,12 @@ export default function StudentsPage() {
   const [jumpDetailsModalOpen, setJumpDetailsModalOpen] = useState<boolean>(false)
   const [logbook, setLogbook] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const { user } = useContext(AuthContext)
+  const { profile } = useUserProfile()
 
   // Fetch logbook when student changes
   useEffect(() => {
-    if (!selectedStudent?.id) return;
+    if (!user || !selectedStudent?.id) return;
   
     setLoading(true);
     const jumpsRef = collection(db, "users", selectedStudent.id, "jumps");
@@ -50,10 +54,15 @@ export default function StudentsPage() {
         jumper={selectedStudent}
         jumpToSignOff={selectedJump} 
         opened={signOffModalOpen} 
-        onClose={() => {setSignOffModalOpen(false); setSelectedJump(null)}} 
+        onClose={() => {
+           setSignOffModalOpen(false);
+           setJumpDetailsModalOpen(false);
+           setSelectedJump(null)
+          }}
       />
 
       <JumpDetailsModal 
+        setSignOffModalOpen={setSignOffModalOpen}
         jumpNumber={selectedJump ? logbook.length - logbook.findIndex(j => j.id === selectedJump.id) : 0} 
         jump={selectedJump} 
         opened={jumpDetailsModalOpen} 

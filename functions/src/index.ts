@@ -66,9 +66,21 @@ export const signOffJump = onCall(async (request) => {
     .collection("jumps")
     .doc(jumpId);
 
+  const instructorId = request.auth.uid;
+  const instructorRef = admin.firestore().collection("users").doc(instructorId);
+  const instructorSnap = await instructorRef.get();
+  
+  if (!instructorSnap.exists) {
+    throw new Error("Instructor profile not found");
+  }
+  
+  const instructorData = instructorSnap.data();
+
   await jumpRef.update({
     signed: true,
-    signedBy: request.auth.uid,
+    signedByUid: instructorId,
+    signedByDisplayName: instructorData?.displayName || "Unknown",
+    signedByLicense: instructorData?.license || null,
     signedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 

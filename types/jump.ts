@@ -18,6 +18,7 @@ export interface Jump {
 
     signed: boolean
     signedByUid?: string
+    signedByDisplayName?: string
     signedByLicense?: string
     signedAt?: Timestamp
   }

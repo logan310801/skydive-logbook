@@ -11,15 +11,18 @@ import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import UserDetails from './UserDetails'
 import JumpList from './JumpList'
+import { useUserProfile } from './contexts/UserProfileContext'
 
 const MainSection = () => {
     const [jumps, setJumps] = useState<Jump[]>([])
-    const { user, loading } = useContext(AuthContext)
+    const { profile } = useUserProfile()
+
+    if (!profile) return <Text>Error: no profile found</Text>
 
   return (
     <Paper withBorder shadow='lg' radius='lg' p='lg' >
 
-        <UserDetails />
+        <UserDetails profile={profile}/>
 
         <JumpList jumps={jumps} setJumps={setJumps} />
 

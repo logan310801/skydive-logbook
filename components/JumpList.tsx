@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from 'react'
 import { Stack, Card, Group, Center, Loader, Text, Button } from '@mantine/core'
-import { CheckCheck, Pencil, Trash2 } from 'lucide-react'
+import { Circle, CircleCheck, Pencil, Trash2 } from 'lucide-react'
 import { deleteJump } from '@/utils/actions/CRUD'
 import { AuthContext } from './contexts/AuthProvider'
 import { Jump } from '@/types/jump'
@@ -76,7 +76,7 @@ const JumpList = ({ jumps, setJumps }: JumpListProps ) => {
                 
                       <Group>
                         <Button onClick={() => {}} size="compact-xs" color="green" variant="transparent">
-                          <CheckCheck size={12} />
+                          {jump.signed ? <CircleCheck size={12} color='green'/> : <Circle size={12} color='yellow' />}
                         </Button>
                         <Button
                           onClick={() => setSelectedJump(jump)}

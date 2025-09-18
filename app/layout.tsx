@@ -11,6 +11,8 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { UserProfileProvider } from "@/components/contexts/UserProfileContext";
 import RoleRedirect from "@/components/redirects/RoleRedirect";
+import { Notifications } from "@mantine/notifications";
+import '@mantine/notifications/styles.css';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
@@ -39,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
                 {/* Page content */}
                 <AppShell.Main>
+                <Notifications />
                   <RoleRedirect>
                     {children}
                   </RoleRedirect>
