@@ -8,6 +8,7 @@ import { AuthContext } from './AuthProvider'
 import { Rig } from '@/types/rig'
 
 export interface UserProfile {
+  id?: string
   displayName: string
   dropzone: string
   license: string

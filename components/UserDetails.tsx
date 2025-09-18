@@ -1,9 +1,12 @@
 import React from 'react'
 import { Group, Card, Loader, Stack, Text } from '@mantine/core'
-import { useUserProfile } from './contexts/UserProfileContext'
+import { UserProfile, useUserProfile } from './contexts/UserProfileContext'
 
-const UserDetails = () => {
-    const { profile } = useUserProfile()
+type Props = {
+  profile: UserProfile
+}
+
+const UserDetails = ({ profile }: Props) => {
 
     if ( !profile ) return <Loader />
   return (

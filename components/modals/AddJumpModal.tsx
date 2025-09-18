@@ -55,6 +55,8 @@ export default function AddJumpModal({ opened, onClose, onAdded }: AddJumpModalP
       lineset: rig.lineset,
       jumpType,
       notes,
+
+      signed: false,
     }
   
     setLoading(true)

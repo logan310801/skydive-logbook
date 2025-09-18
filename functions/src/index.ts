@@ -30,9 +30,50 @@ export const setUserRole = onCall(async (request) => {
     }
   
     await admin.auth().setCustomUserClaims(uid, { role });
+
+    const userRef = admin.firestore().collection("users").doc(uid);
+    await userRef.set({ role }, { merge: true });
+
   
     return { message: `Role '${role}' set for user ${uid}` };
   });
+
+export const signOffJump = onCall(async (request) => {
+  const { studentId, jumpId } = request.data as {
+    studentId: string;
+    jumpId: string;
+  };
+
+  // 1. Check authentication
+  if (!request.auth) {
+    throw new Error("Unauthenticated");
+  }
+
+  // 2. Check role
+  if (request.auth.token.role !== "instructor" && request.auth.token.role !== "admin") {
+    throw new Error("Permission denied: only instructors/admins can sign off jumps");
+  }
+
+  // 3. Validate inputs
+  if (!studentId || !jumpId) {
+    throw new Error("Missing studentId or jumpId");
+  }
+
+  // 4. Update the jump
+  const jumpRef = admin.firestore()
+    .collection("users")
+    .doc(studentId)
+    .collection("jumps")
+    .doc(jumpId);
+
+  await jumpRef.update({
+    signed: true,
+    signedBy: request.auth.uid,
+    signedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  return { message: `Jump ${jumpId} signed off for student ${studentId}` };
+});
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript

@@ -5,15 +5,17 @@ import { DateInput } from '@mantine/dates'
 import { updateJump } from '@/utils/actions/CRUD'
 import { AuthContext } from '../contexts/AuthProvider'
 import { Timestamp } from 'firebase/firestore'
+import { UserProfile } from '../contexts/UserProfileContext'
 
 type JumpDetailsModalProps = {
     opened: boolean
     onClose: () => void
     jump: Jump | null
     jumpNumber: number
+    externalViewer?: boolean
 }
 
-const JumpDetailsModal = ({ jump, opened, onClose, jumpNumber }: JumpDetailsModalProps) => {
+const JumpDetailsModal = ({ externalViewer, jump, opened, onClose, jumpNumber }: JumpDetailsModalProps) => {
   const { user } = useContext(AuthContext)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -62,9 +64,8 @@ const handleSave = async () => {
 };
 
   return (
-    <Modal opened={opened} onClose={onClose}>
+    <Modal title={`Jump ${jumpNumber}`} opened={opened} onClose={onClose}>
     <Stack>
-      <Text size='lg' fw={900} >Jump {jumpNumber}</Text>
 
         <Stack>
           <TextInput 

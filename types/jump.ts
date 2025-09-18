@@ -15,4 +15,9 @@ export interface Jump {
     jumpType?: string
     notes?: string
     createdAt?: string    // optional, added by Firestore
+
+    signed: boolean
+    signedByUid?: string
+    signedByLicense?: string
+    signedAt?: Timestamp
   }

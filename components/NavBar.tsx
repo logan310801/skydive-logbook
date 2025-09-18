@@ -38,37 +38,45 @@ const NavBar = ({ toggle }: NavBarProps) => {
             Profile
           </Button>
 
-          <Button 
-          disabled={profile?.role === 'admin' || profile?.role === 'dropzone'}
-          onClick={() => { 
-            router.push('/') 
-            toggle()
-          } } variant='outline'
-            >Home
-          </Button>
+          {profile?.role !== 'admin' && 
+          <>
+            <Button 
+            disabled={profile?.role === 'dropzone'}
+            onClick={() => { 
+              router.push('/') 
+              toggle()
+            } } variant='outline'
+              >Home
+            </Button>
 
-          <Button 
-          disabled={profile?.role === 'admin' || profile?.role === 'dropzone'}
-          onClick={() => { 
-            router.push('/equipment')
-            toggle()
-            } } variant='outline'>
-            Equipment
-          </Button>
+            <Button 
+            disabled={profile?.role === 'dropzone'}
+            onClick={() => { 
+              router.push('/equipment')
+              toggle()
+              } } variant='outline'>
+              Equipment
+            </Button>
+
+            <Button 
+            disabled={profile?.role === 'dropzone'}
+            onClick={() => { 
+              router.push('/') 
+              toggle()
+            }} variant='outline'>
+              Help / FAQ
+            </Button>
+            </>
+          }
+
+          
 
           <Button 
           onClick={handleLogout} variant='outline'>
             Log out
           </Button>
 
-          <Button 
-          disabled={profile?.role === 'admin' || profile?.role === 'dropzone'}
-          onClick={() => { 
-            router.push('/') 
-            toggle()
-          }} variant='outline'>
-            Help / FAQ
-          </Button>
+          
 
           {
             profile?.role === 'admin' &&
@@ -81,6 +89,15 @@ const NavBar = ({ toggle }: NavBarProps) => {
               </Button>
               <Button onClick={() => { router.push('/admin/instructors'); toggle(); }} color='teal'>
                 Instructors (Admin)
+              </Button>
+            </>
+          }
+
+          {
+            profile?.role === 'instructor' && 
+            <>
+              <Button onClick={() => { router.push('/studentsearch'); toggle(); }} color='teal'>
+                Students
               </Button>
             </>
           }

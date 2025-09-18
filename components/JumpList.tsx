@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from 'react'
 import { Stack, Card, Group, Center, Loader, Text, Button } from '@mantine/core'
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { CheckCheck, Pencil, Trash2 } from 'lucide-react'
 import { deleteJump } from '@/utils/actions/CRUD'
 import { AuthContext } from './contexts/AuthProvider'
 import { Jump } from '@/types/jump'
@@ -55,10 +55,6 @@ const JumpList = ({ jumps, setJumps }: JumpListProps ) => {
         }
       }
 
-  const handleInfo = () => {
-
-  }
-
   return (
     <>
     <JumpDetailsModal
@@ -79,13 +75,13 @@ const JumpList = ({ jumps, setJumps }: JumpListProps ) => {
                       </Group>
                 
                       <Group>
-                        <Button onClick={() => {}} size="compact-xs" color="white" variant="transparent">
-                          <MoreHorizontal size={12} />
+                        <Button onClick={() => {}} size="compact-xs" color="green" variant="transparent">
+                          <CheckCheck size={12} />
                         </Button>
                         <Button
                           onClick={() => setSelectedJump(jump)}
                           size="compact-xs"
-                          color="yellow"
+                          color="white"
                           variant="transparent"
                         >
                           <Pencil size={12} />

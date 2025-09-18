@@ -2,6 +2,8 @@ import { db } from '@/firebase/config'
 import { Jump } from '@/types/jump'
 import { Rig } from '@/types/rig'
 import { collection, getDocs, query, orderBy, addDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore'
+import { functions } from '@/firebase/config'
+import { httpsCallable } from 'firebase/functions'
 
 export async function getJumps(uid: string): Promise<Jump[]> {
     const jumpsRef = collection(db, 'users', uid, 'jumps')
@@ -35,6 +37,8 @@ export async function deleteJump(uid: string, jumpId: string) {
     await deleteDoc(jumpRef)
 }
 
+///
+
 export async function addRig(uid: string, rigData: Omit<Rig, 'id' | 'createdAt'>) {
     const rigsRef = collection(db, 'users', uid, 'rigs')
     await addDoc(rigsRef, {
@@ -61,5 +65,32 @@ export async function deleteRig(uid: string, rigId: string) {
     } catch (error) {
         console.error(error)
         throw error
+    }
+}
+
+///
+
+export async function updateUser(uid: string, role: 'admin' | 'dropzone' | 'student' | 'instructor') {
+    const setUserRole = httpsCallable(functions, 'setUserRole')
+    try {
+        const result = await setUserRole( {uid, role} )
+        console.log(result.data)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+///
+
+export async function signOffJump(studentId: string | undefined, jumpId: string | undefined) {
+    const callable = httpsCallable(functions, 'signOffJump')
+
+    if (!studentId || !jumpId) throw new Error('Failed to get correct studentID and or JumpId for update in crud')
+        
+    try {
+        const result = await callable({ studentId, jumpId })
+        console.log(result.data)
+    } catch (err) {
+        console.error(err)
     }
 }
