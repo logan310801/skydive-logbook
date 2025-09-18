@@ -1,3 +1,4 @@
+## JLOG
 ## This is a project designed for skydivers to log their jumps efficiently. (in continuous development)
 
 Key features
