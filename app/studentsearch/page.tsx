@@ -38,7 +38,7 @@ export default function StudentsPage() {
     });
   
     return () => unsubscribe(); // cleanup listener when student changes
-  }, [selectedStudent]);
+  }, [selectedStudent, user]);
 
   return (
     <ProtectedRoute allowedRoles={['admin', 'instructor', 'dropzone']} redirectTo="/profile">

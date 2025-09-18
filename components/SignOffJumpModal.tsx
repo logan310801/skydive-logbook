@@ -41,8 +41,9 @@ const SignOffJumpModal = ({ jumpNumber, jumper, jumpToSignOff, opened, onClose }
             color: 'red',
           });
           console.error(err);
-        setLoading(false)
+        
     }
+    setLoading(false)
     }
 
 
